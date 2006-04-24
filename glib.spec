@@ -1,0 +1,255 @@
+
+Summary: A library of handy utility functions
+Name: 	 glib
+Epoch:	 1
+Version: 1.2.10
+Release: 20%{?dist}
+
+License: LGPL
+Group:	 System Environment/Libraries
+URL:	 http://www.gtk.org/
+Source:  ftp://ftp.gimp.org/pub/gtk/v1.2/glib-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+# Suppress warnings about varargs macros for -pedantic
+Patch1: glib-1.2.10-isowarning.patch
+Patch2: glib-1.2.10-gcc34.patch
+Patch3: glib-1.2.10-underquoted.patch
+
+%description
+GLib is a handy library of utility functions. This C library is
+designed to solve some portability problems and provide other useful
+functionality which most programs require.
+
+%package devel
+Summary: Libraries and header files for %{name} development 
+Group:	 Development/Libraries
+Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: pkgconfig
+%description devel
+%{summary}.
+
+
+%prep
+%setup -q 
+
+%patch1 -p1 -b .isowarning
+%patch2 -p1 -b .gcc34
+%patch3 -p1 -b .underquoted
+
+
+%build
+%configure --disable-static
+
+make %{?_smp_mflags}
+
+
+# I *know* ||: isn't needed, but this *is* a legacy pkg afterall.
+%check || :
+make check
+
+
+%install
+rm -rf $RPM_BUILD_ROOT
+
+%makeinstall
+
+rm -rf $RPM_BUILD_ROOT%{_infodir}
+rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.la
+# libgmodule-1.2.so.0* missing eXecute bit
+chmod a+x $RPM_BUILD_ROOT%{_libdir}/lib*.so
+
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+
+%files
+%defattr(-,root,root,-)
+%doc AUTHORS COPYING ChangeLog NEWS README
+%{_libdir}/lib*.so.*
+
+%files devel
+%defattr(-,root,root,-)
+%{_bindir}/glib-config
+%{_libdir}/lib*.so
+%{_libdir}/glib/
+%{_libdir}/pkgconfig/*
+%{_includedir}/*
+%{_mandir}/man1/*
+%{_datadir}/aclocal/*
+
+
+%changelog
+* Wed Apr 12 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1:1.2.10-20
+- cleanup %%description
+- libgmodule-1.2.so.0* missing eXecute bit
+- utf-8'ize specfile
+
+* Thu Apr 06 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1:1.2.10-19
+- cleanup for Extras
+- -devel: Requires: pkgconfig
+
+* Fri Feb 10 2006 Jesse Keating <jkeating@redhat.com> - 1:1.2.10-18.2.2
+- bump again for double-long bug on ppc(64)
+
+* Tue Feb 07 2006 Jesse Keating <jkeating@redhat.com> - 1:1.2.10-18.2.1
+- rebuilt for new gcc4.1 snapshot and glibc changes
+
+* Tue Jan  3 2006 Jesse Keating <jkeating@redhat.com> 1:1.2.10-18.2
+- rebuilt again
+
+* Fri Dec 09 2005 Jesse Keating <jkeating@redhat.com>
+- rebuilt
+
+* Mon Nov 21 2005 Matthias Clasen <mclasen@redhat.com> 1:1.2.10-18
+- Make sure all libraries are stripped
+
+* Mon Nov  7 2005 Matthias Clasen <mclasen@redhat.com> 1:1.2.10-17
+- Remove .la files and static libs from the -devel package.
+
+* Wed Mar  2 2005 Matthias Clasen <mclasen@redhat.com> 1:1.2.10-16
+- Rebuild with gcc4
+
+* Mon Aug  9 2004 Tim Waugh <twaugh@redhat.com> 1:1.2.10-15
+- Fixed underquoted m4 definitions.
+
+* Mon Jun 20 2004 Matthias Clasen <mclasen@redhat.com> 1:1.2.10-14
+- Make it build with gcc 3.4
+
+* Tue Jun 15 2004 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Tue Mar 02 2004 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Fri Feb 13 2004 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Sun Jun  8 2003 Tim Powers <timp@redhat.com> 1:1.2.10-11.1
+- build for RHEL
+
+* Wed Jun 04 2003 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Tue Jun  3 2003 Jeff Johnson <jbj@redhat.com>
+- add explicit epoch's where needed.
+
+* Wed Jan 22 2003 Tim Powers <timp@redhat.com>
+- rebuilt
+
+* Fri Nov 29 2002 Tim Powers <timp@redhat.com> 1:1.2.10-9
+- remove unpackaged files from the buildroot
+
+* Fri Jun 21 2002 Tim Powers <timp@redhat.com>
+- automated rebuild
+
+* Thu May 23 2002 Tim Powers <timp@redhat.com>
+- automated rebuild
+
+* Wed Jan 09 2002 Tim Powers <timp@redhat.com>
+- automated rebuild
+
+* Sat Jul 21 2001 Owen Taylor <otaylor@redhat.com>
+- Add #pragma GCC system_header to supress warnings when in -pedantic
+  mode. (41271)
+
+* Tue Jul 10 2001 Trond Eivind Glomsrod <teg@redhat.com>
+- s/Copyright/License/
+- Make the devel subpackage depend on the main package
+
+* Sun Jun 24 2001 Elliot Lee <sopwith@redhat.com>
+- Bump release + rebuild.
+
+* Sun Apr 22 2001  <jrb@redhat.com>
+- Include pc files.
+
+* Tue Apr 17 2001 Jonathan Blandford <jrb@redhat.com>
+- Version 1.2.10
+
+* Mon Mar 05 2001 Owen Taylor <otaylor@redhat.com>
+- Version 1.2.9
+
+* Wed Feb 28 2001 Owen Taylor <otaylor@redhat.com>
+- Version 1.2.9pre3
+
+* Tue Feb 27 2001 Owen Taylor <otaylor@redhat.com>
+- Version 1.2.9pre2
+
+* Tue Feb 13 2001 Owen Taylor <otaylor@redhat.com>
+- Version 1.2.9pre1
+
+* Sat Oct 28 2000 Owen Taylor <otaylor@redhat.com>
+- Add patch to suppress warnings from GCC by using
+  C99 standard varargs macros
+
+* Fri Aug 11 2000 Jonathan Blandford <jrb@redhat.com>
+- Up Epoch and release
+
+* Thu Jul 13 2000 Prospector <bugzilla@redhat.com>
+- automatic rebuild
+
+* Mon Jun 19 2000 Preston Brown <pbrown@redhat.com>
+- FHS paths
+
+* Thu May 25 2000 Owen Taylor <otaylor@redhat.com>
+- Version 1.2.8
+
+* Mon May  1 2000 Matt Wilson <msw@redhat.com>
+- version 1.2.7
+
+* Fri Feb 04 2000 Owen Taylor <otaylor@redhat.com>
+- Added fixes from stable branch of CVS
+
+* Thu Oct 7  1999 Owen Taylor <otaylor@redhat.com>
+- version 1.2.6
+
+* Fri Sep 24 1999 Owen Taylor <otaylor@redhat.com>
+- version 1.2.5
+
+* Fri Sep 17 1999 Owen Taylor <otaylor@redhat.com>
+- version 1.2.4
+
+* Mon Jun 7 1999 Owen Taylor <otaylor@redhat.com>
+- version 1.2.3
+
+* Thu Mar 25 1999 Michael Fulbright <drmike@redhat.com>
+- version 1.2.1
+
+* Fri Feb 26 1999 Michael Fulbright <drmike@redhat.com>
+- Version 1.2
+
+* Thu Feb 25 1999 Michael Fulbright <drmike@redhat.com>
+- version 1.2.0pre1
+
+* Tue Feb 23 1999 Cristian Gafton <gafton@redhat.com>
+- new description tags 
+
+* Sun Feb 21 1999 Michael Fulbright <drmike@redhat.com>
+- removed libtoolize from %build
+
+* Thu Feb 11 1999 Michael Fulbright <drmike@redhat.com>
+- added libgthread to file list
+
+* Fri Feb 05 1999 Michael Fulbright <drmike@redhat.com>
+- version 1.1.15
+
+* Wed Feb 03 1999 Michael Fulbright <drmike@redhat.com>
+- version 1.1.14
+
+* Mon Jan 18 1999 Michael Fulbright <drmike@redhat.com>
+- version 1.1.13
+
+* Wed Jan 06 1999 Michael Fulbright <drmike@redhat.com>
+- version 1.1.12
+
+* Wed Dec 16 1998 Michael Fulbright <drmike@redhat.com>
+- updated in preparation for the GNOME freeze
+
+* Mon Apr 13 1998 Marc Ewing <marc@redhat.com>
+- Split out glib package
