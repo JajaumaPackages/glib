@@ -3,7 +3,7 @@ Summary: A library of handy utility functions
 Name: 	 glib
 Epoch:	 1
 Version: 1.2.10
-Release: 20%{?dist}
+Release: 21%{?dist}
 
 License: LGPL
 Group:	 System Environment/Libraries
@@ -11,10 +11,14 @@ URL:	 http://www.gtk.org/
 Source:  ftp://ftp.gimp.org/pub/gtk/v1.2/glib-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
+BuildRequires: automake14 autoconf213
+BuildRequires: libtool
+
 # Suppress warnings about varargs macros for -pedantic
 Patch1: glib-1.2.10-isowarning.patch
 Patch2: glib-1.2.10-gcc34.patch
 Patch3: glib-1.2.10-underquoted.patch
+Patch4: glib-1.2.10-no_undefined.patch
 
 %description
 GLib is a handy library of utility functions. This C library is
@@ -36,28 +40,43 @@ Requires: pkgconfig
 %patch1 -p1 -b .isowarning
 %patch2 -p1 -b .gcc34
 %patch3 -p1 -b .underquoted
+%patch4 -p1 -b .no_undefined
+
+#libtoolize --copy --force
+automake-1.4
+aclocal-1.4
+autoconf-2.13
+autoheader-2.13
 
 
 %build
+LIBTOOL=/usr/bin/libtool \
 %configure --disable-static
 
-make %{?_smp_mflags}
-
-
-# I *know* ||: isn't needed, but this *is* a legacy pkg afterall.
-%check || :
-make check
+make %{?_smp_mflags} LIBTOOL=/usr/bin/libtool
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%makeinstall
+#makeinstall
+make install DESTDIR=$RPM_BUILD_ROOT LIBTOOL=/usr/bin/libtool
 
-rm -rf $RPM_BUILD_ROOT%{_infodir}
-rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.la
 # libgmodule-1.2.so.0* missing eXecute bit
-chmod a+x $RPM_BUILD_ROOT%{_libdir}/lib*.so
+chmod a+x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
+
+## Unpackaged files
+# info
+rm -rf $RPM_BUILD_ROOT%{_infodir}
+# .la fies... die die die.
+rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.la
+# despite use of --disable-static, delete static libs that get built anyway
+rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.a
+
+
+# I *know* ||: isn't needed, but this could end up used by legacy
+%check ||:
+make check LIBTOOL=/usr/bin/libtool
 
 
 %clean
@@ -86,6 +105,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May 04 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1:1.2.10-21
+- fix undefined symbols in libgmodule,libgthread
+
 * Wed Apr 12 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1:1.2.10-20
 - cleanup %%description
 - libgmodule-1.2.so.0* missing eXecute bit
