@@ -3,7 +3,7 @@ Summary: A library of handy utility functions
 Name: 	 glib
 Epoch:	 1
 Version: 1.2.10
-Release: 21%{?dist}
+Release: 22%{?dist}
 
 License: LGPL
 Group:	 System Environment/Libraries
@@ -105,6 +105,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 09 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1:1.2.10-22
+- fc6 respin
+
 * Thu May 04 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1:1.2.10-21
 - fix undefined symbols in libgmodule,libgthread
 
