@@ -3,7 +3,7 @@ Summary: A library of handy utility functions
 Name: 	 glib
 Epoch:	 1
 Version: 1.2.10
-Release: 23%{?dist}
+Release: 24%{?dist}
 
 License: LGPL
 Group:	 System Environment/Libraries
@@ -19,6 +19,7 @@ Patch1: glib-1.2.10-isowarning.patch
 Patch2: glib-1.2.10-gcc34.patch
 Patch3: glib-1.2.10-underquoted.patch
 Patch4: glib-1.2.10-no_undefined.patch
+Patch5: glib-1.2.10-multilib.patch
 
 %description
 GLib is a handy library of utility functions. This C library is
@@ -41,6 +42,7 @@ Requires: pkgconfig
 %patch2 -p1 -b .gcc34
 %patch3 -p1 -b .underquoted
 %patch4 -p1 -b .no_undefined
+%patch5 -p1 -b .multilib
 
 #libtoolize --copy --force
 automake-1.4
@@ -59,7 +61,6 @@ make %{?_smp_mflags} LIBTOOL=/usr/bin/libtool
 %install
 rm -rf $RPM_BUILD_ROOT
 
-#makeinstall
 make install DESTDIR=$RPM_BUILD_ROOT LIBTOOL=/usr/bin/libtool
 
 # libgmodule-1.2.so.0* missing eXecute bit
@@ -105,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 11 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 1:1.2.10-24
+- multilib patch (#222296)
+
 * Tue Aug 29 2006 Rex Dieter <rexdieter[AT]users.sf.net> 1:1.2.10-23
 - fc6 respin
 
