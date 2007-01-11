@@ -3,7 +3,7 @@ Summary: A library of handy utility functions
 Name: 	 glib
 Epoch:	 1
 Version: 1.2.10
-Release: 24%{?dist}
+Release: 25%{?dist}
 
 License: LGPL
 Group:	 System Environment/Libraries
@@ -19,6 +19,7 @@ Patch1: glib-1.2.10-isowarning.patch
 Patch2: glib-1.2.10-gcc34.patch
 Patch3: glib-1.2.10-underquoted.patch
 Patch4: glib-1.2.10-no_undefined.patch
+# http://bugzilla.redhat.com/222296
 Patch5: glib-1.2.10-multilib.patch
 
 %description
@@ -44,24 +45,25 @@ Requires: pkgconfig
 %patch4 -p1 -b .no_undefined
 %patch5 -p1 -b .multilib
 
-#libtoolize --copy --force
+cp -f %{_datadir}/aclocal/libtool.m4 .
+libtoolize --copy --force
 automake-1.4
 aclocal-1.4
 autoconf-2.13
 autoheader-2.13
 
 
+
 %build
-LIBTOOL=/usr/bin/libtool \
 %configure --disable-static
 
-make %{?_smp_mflags} LIBTOOL=/usr/bin/libtool
+make %{?_smp_mflags} 
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make install DESTDIR=$RPM_BUILD_ROOT LIBTOOL=/usr/bin/libtool
+make install DESTDIR=$RPM_BUILD_ROOT 
 
 # libgmodule-1.2.so.0* missing eXecute bit
 chmod a+x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
@@ -77,7 +79,7 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.a
 
 # I *know* ||: isn't needed, but this could end up used by legacy
 %check ||:
-make check LIBTOOL=/usr/bin/libtool
+make check 
 
 
 %clean
@@ -106,6 +108,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 11 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 1:1.2.10-25
+- cleanup libtool hacks
+
 * Thu Jan 11 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 1:1.2.10-24
 - multilib patch (#222296)
 
