@@ -3,7 +3,7 @@ Summary: A library of handy utility functions
 Name: 	 glib
 Epoch:	 1
 Version: 1.2.10
-Release: 25%{?dist}
+Release: 26%{?dist}
 
 License: LGPL
 Group:	 System Environment/Libraries
@@ -45,25 +45,26 @@ Requires: pkgconfig
 %patch4 -p1 -b .no_undefined
 %patch5 -p1 -b .multilib
 
-cp -f %{_datadir}/aclocal/libtool.m4 .
-libtoolize --copy --force
+#cp -f %{_datadir}/aclocal/libtool.m4 .
+#libtoolize --copy --force
 automake-1.4
-aclocal-1.4
+#aclocal-1.4
 autoconf-2.13
 autoheader-2.13
 
 
 
 %build
+LIBTOOL=%{_bindir}/libtool \
 %configure --disable-static
 
-make %{?_smp_mflags} 
+make %{?_smp_mflags} LIBTOOL=%{_bindir}/libtool
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-make install DESTDIR=$RPM_BUILD_ROOT 
+make install DESTDIR=$RPM_BUILD_ROOT LIBTOOL=%{_bindir}/libtool
 
 # libgmodule-1.2.so.0* missing eXecute bit
 chmod a+x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
@@ -79,7 +80,7 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.a
 
 # I *know* ||: isn't needed, but this could end up used by legacy
 %check ||:
-make check 
+make check LIBTOOL=%{_bindir}/libtool
 
 
 %clean
@@ -108,6 +109,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 11 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 1:1.2.10-26
+- revert libtool-related breakage 
+
 * Thu Jan 11 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 1:1.2.10-25
 - cleanup libtool hacks
 
