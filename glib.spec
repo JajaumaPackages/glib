@@ -3,7 +3,7 @@ Summary: A library of handy utility functions
 Name: 	 glib
 Epoch:	 1
 Version: 1.2.10
-Release: 28%{?dist}
+Release: 29%{?dist}
 
 License: LGPLv2+
 Group:	 System Environment/Libraries
@@ -109,6 +109,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Feb 11 2008 Rex Dieter <rdieter@fedoraproject.org> 1:1.2.10-29 
+- respin (gcc43)
+
 * Tue Aug 21 2007 Rex Dieter <rdieter[AT]fedoraproject.org> 1:1.2.10-28
 - respin (buildID)
 
