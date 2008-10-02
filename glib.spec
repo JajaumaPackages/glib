@@ -3,7 +3,7 @@ Summary: A library of handy utility functions
 Name: 	 glib
 Epoch:	 1
 Version: 1.2.10
-Release: 29%{?dist}
+Release: 30%{?dist}
 
 License: LGPLv2+
 Group:	 System Environment/Libraries
@@ -44,6 +44,11 @@ Requires: pkgconfig
 %patch3 -p1 -b .underquoted
 %patch4 -p1 -b .no_undefined
 %patch5 -p1 -b .multilib
+
+# The original config.{guess,sub} do not work on x86_64
+#
+# The following /usr/lib cannot be %%_libdir !!
+cp -p /usr/lib/rpm/config.{guess,sub} .
 
 #cp -f %{_datadir}/aclocal/libtool.m4 .
 #libtoolize --copy --force
@@ -108,6 +113,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct  1 2008 Patrice Dumas <pertusus@free.fr> 1:1.2.10-30
+- copy config.* from rpm directory, those shipped are too old. Should
+  fix #462650.
+
 * Mon Feb 11 2008 Rex Dieter <rdieter@fedoraproject.org> 1:1.2.10-29 
 - respin (gcc43)
 
