@@ -3,7 +3,7 @@ Summary: A library of handy utility functions
 Name: 	 glib
 Epoch:	 1
 Version: 1.2.10
-Release: 30%{?dist}
+Release: 31%{?dist}
 
 License: LGPLv2+
 Group:	 System Environment/Libraries
@@ -113,6 +113,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 25 2009 Mamoru Tasaka <mtasaka@ioa.s.u-tokyo.ac.jp> 1:1.2.10-31
+- Rebuild for pkgconfig deps
+
 * Wed Oct  1 2008 Patrice Dumas <pertusus@free.fr> 1:1.2.10-30
 - copy config.* from rpm directory, those shipped are too old. Should
   fix #462650.
