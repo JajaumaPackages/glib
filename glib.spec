@@ -1,18 +1,15 @@
-
-Summary: A library of handy utility functions
-Name: 	 glib
-Epoch:	 1
-Version: 1.2.10
-Release: 31%{?dist}
-
-License: LGPLv2+
-Group:	 System Environment/Libraries
-URL:	 http://www.gtk.org/
-Source:  ftp://ftp.gimp.org/pub/gtk/v1.2/glib-%{version}.tar.gz
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-BuildRequires: automake14 autoconf213
-BuildRequires: libtool
+Summary:	A library of handy utility functions
+Name:		glib
+Epoch:		1
+Version:	1.2.10
+Release:	32%{?dist}
+License:	LGPLv2+
+Group:		System Environment/Libraries
+URL:		http://www.gtk.org/
+Source:		ftp://ftp.gimp.org/pub/gtk/v1.2/glib-%{version}.tar.gz
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires:	automake14 autoconf213
+BuildRequires:	libtool
 
 # Suppress warnings about varargs macros for -pedantic
 Patch1: glib-1.2.10-isowarning.patch
@@ -21,17 +18,22 @@ Patch3: glib-1.2.10-underquoted.patch
 Patch4: glib-1.2.10-no_undefined.patch
 # http://bugzilla.redhat.com/222296
 Patch5: glib-1.2.10-multilib.patch
+# Fix unused direct shared library dependency on libgmodule for libgthread
+Patch6: glib-1.2.10-unused-dep.patch
+
 
 %description
 GLib is a handy library of utility functions. This C library is
 designed to solve some portability problems and provide other useful
-functionality which most programs require.
+functionality that most programs require.
+
 
 %package devel
 Summary: Libraries and header files for %{name} development 
 Group:	 Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
 Requires: pkgconfig
+
 %description devel
 %{summary}.
 
@@ -44,6 +46,7 @@ Requires: pkgconfig
 %patch3 -p1 -b .underquoted
 %patch4 -p1 -b .no_undefined
 %patch5 -p1 -b .multilib
+%patch6 -p1 -b .unused-dep
 
 # The original config.{guess,sub} do not work on x86_64
 #
@@ -58,37 +61,36 @@ autoconf-2.13
 autoheader-2.13
 
 
-
 %build
 LIBTOOL=%{_bindir}/libtool \
 %configure --disable-static
 
-make %{?_smp_mflags} LIBTOOL=%{_bindir}/libtool
+%{__make} %{?_smp_mflags} LIBTOOL=%{_bindir}/libtool
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
+%{__rm} -rf %{buildroot}
 
-make install DESTDIR=$RPM_BUILD_ROOT LIBTOOL=%{_bindir}/libtool
+%{__make} install DESTDIR=%{buildroot} LIBTOOL=%{_bindir}/libtool
 
 # libgmodule-1.2.so.0* missing eXecute bit
-chmod a+x $RPM_BUILD_ROOT%{_libdir}/lib*.so*
+%{__chmod} a+x %{buildroot}%{_libdir}/lib*.so*
 
 ## Unpackaged files
 # info
-rm -rf $RPM_BUILD_ROOT%{_infodir}
+%{__rm} -rf %{buildroot}%{_infodir}
 # .la fies... die die die.
-rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.la
+%{__rm} -rf %{buildroot}%{_libdir}/lib*.la
 # despite use of --disable-static, delete static libs that get built anyway
-rm -f $RPM_BUILD_ROOT%{_libdir}/lib*.a
+%{__rm} -rf %{buildroot}%{_libdir}/lib*.a
 
 
 %check
-make check LIBTOOL=%{_bindir}/libtool
+%{__make} check LIBTOOL=%{_bindir}/libtool
 
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+%{__rm} -rf %{buildroot}
 
 
 %post -p /sbin/ldconfig
@@ -111,10 +113,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/*
 %{_datadir}/aclocal/*
 
-
 %changelog
+* Fri Apr 17 2009 Paul Howarth <paul@city-fan.org> 1:1.2.10-32
+- remove redundant linkage of libgmodule to libgthread
+- cosmetic spec changes
+
 * Wed Feb 25 2009 Mamoru Tasaka <mtasaka@ioa.s.u-tokyo.ac.jp> 1:1.2.10-31
-- Rebuild for pkgconfig deps
+- rebuild for pkgconfig deps
 
 * Wed Oct  1 2008 Patrice Dumas <pertusus@free.fr> 1:1.2.10-30
 - copy config.* from rpm directory, those shipped are too old. Should
@@ -292,7 +297,7 @@ rm -rf $RPM_BUILD_ROOT
 - new description tags 
 
 * Sun Feb 21 1999 Michael Fulbright <drmike@redhat.com>
-- removed libtoolize from %build
+- removed libtoolize from %%build
 
 * Thu Feb 11 1999 Michael Fulbright <drmike@redhat.com>
 - added libgthread to file list
