@@ -2,12 +2,12 @@ Summary:	A library of handy utility functions
 Name:		glib
 Epoch:		1
 Version:	1.2.10
-Release:	35%{?dist}
+Release:	36%{?dist}
 License:	LGPLv2+
 Group:		System Environment/Libraries
 URL:		http://www.gtk.org/
 Source:		ftp://ftp.gimp.org/pub/gtk/v1.2/glib-%{version}.tar.gz
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
 BuildRequires:	automake14 autoconf213
 BuildRequires:	libtool
 
@@ -65,32 +65,32 @@ autoheader-2.13
 LIBTOOL=%{_bindir}/libtool \
 %configure --disable-static
 
-%{__make} %{?_smp_mflags} LIBTOOL=%{_bindir}/libtool
+make %{?_smp_mflags} LIBTOOL=%{_bindir}/libtool
 
 
 %install
-%{__rm} -rf %{buildroot}
+rm -rf %{buildroot}
 
-%{__make} install DESTDIR=%{buildroot} LIBTOOL=%{_bindir}/libtool
+make install DESTDIR=%{buildroot} LIBTOOL=%{_bindir}/libtool
 
 # libgmodule-1.2.so.0* missing eXecute bit
-%{__chmod} a+x %{buildroot}%{_libdir}/lib*.so*
+chmod -c a+x %{buildroot}%{_libdir}/lib*.so*
 
 ## Unpackaged files
 # info
-%{__rm} -rf %{buildroot}%{_infodir}
+rm -rf %{buildroot}%{_infodir}
 # .la fies... die die die.
-%{__rm} -rf %{buildroot}%{_libdir}/lib*.la
+rm -rf %{buildroot}%{_libdir}/lib*.la
 # despite use of --disable-static, delete static libs that get built anyway
-%{__rm} -rf %{buildroot}%{_libdir}/lib*.a
+rm -rf %{buildroot}%{_libdir}/lib*.a
 
 
 %check
-%{__make} check LIBTOOL=%{_bindir}/libtool
+make check LIBTOOL=%{_bindir}/libtool
 
 
 %clean
-%{__rm} -rf %{buildroot}
+rm -rf %{buildroot}
 
 
 %post -p /sbin/ldconfig
@@ -114,14 +114,17 @@ LIBTOOL=%{_bindir}/libtool \
 %{_datadir}/aclocal/*
 
 %changelog
-* Wed Oct 26 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.2.10-35
-- Rebuilt for glibc bug#747377
+* Thu Jan  5 2012 Paul Howarth <paul@city-fan.org> 1:1.2.10-36
+- rebuilt for gcc 4.7
 
-* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.2.10-34
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+* Wed Oct 26 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> 1:1.2.10-35
+- rebuilt for glibc bug#747377
 
-* Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.2.10-33
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> 1:1.2.10-34
+- rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> 1:1.2.10-33
+- rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
 * Fri Apr 17 2009 Paul Howarth <paul@city-fan.org> 1:1.2.10-32
 - remove redundant linkage of libgmodule to libgthread
