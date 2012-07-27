@@ -2,7 +2,7 @@ Summary:	A library of handy utility functions
 Name:		glib
 Epoch:		1
 Version:	1.2.10
-Release:	36%{?dist}
+Release:	37%{?dist}
 License:	LGPLv2+
 Group:		System Environment/Libraries
 URL:		http://www.gtk.org/
@@ -114,6 +114,9 @@ rm -rf %{buildroot}
 %{_datadir}/aclocal/*
 
 %changelog
+* Fri Jul 27 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.2.10-37
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Thu Jan  5 2012 Paul Howarth <paul@city-fan.org> 1:1.2.10-36
 - rebuilt for gcc 4.7
 
