@@ -2,13 +2,12 @@ Summary:	A library of handy utility functions
 Name:		glib
 Epoch:		1
 Version:	1.2.10
-Release:	38%{?dist}
+Release:	39%{?dist}
 License:	LGPLv2+
 Group:		System Environment/Libraries
 URL:		http://www.gtk.org/
 Source:		ftp://ftp.gimp.org/pub/gtk/v1.2/glib-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
-BuildRequires:	automake14 autoconf213
 BuildRequires:	libtool
 
 # Suppress warnings about varargs macros for -pedantic
@@ -20,6 +19,8 @@ Patch4: glib-1.2.10-no_undefined.patch
 Patch5: glib-1.2.10-multilib.patch
 # Fix unused direct shared library dependency on libgmodule for libgthread
 Patch6: glib-1.2.10-unused-dep.patch
+# Avoid having to run autotools at build time
+Patch7: glib-1.2.10-autotools.patch
 
 
 %description
@@ -47,18 +48,12 @@ Requires: pkgconfig
 %patch4 -p1 -b .no_undefined
 %patch5 -p1 -b .multilib
 %patch6 -p1 -b .unused-dep
+%patch7 -b .autotools
 
-# The original config.{guess,sub} do not work on x86_64
+# The original config.{guess,sub} do not work on x86_64, aarch64 etc.
 #
 # The following /usr/lib cannot be %%_libdir !!
 cp -p /usr/lib/rpm/config.{guess,sub} .
-
-#cp -f %{_datadir}/aclocal/libtool.m4 .
-#libtoolize --copy --force
-automake-1.4
-#aclocal-1.4
-autoconf-2.13
-autoheader-2.13
 
 
 %build
@@ -114,6 +109,9 @@ rm -rf %{buildroot}
 %{_datadir}/aclocal/*
 
 %changelog
+* Fri May 10 2013 Paul Howarth <paul@city-fan.org> - 1:1.2.10-39
+- Avoid having to run autotools at build time (#961283)
+
 * Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.2.10-38
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
@@ -203,7 +201,7 @@ rm -rf %{buildroot}
 * Mon Aug  9 2004 Tim Waugh <twaugh@redhat.com> 1:1.2.10-15
 - Fixed underquoted m4 definitions.
 
-* Mon Jun 20 2004 Matthias Clasen <mclasen@redhat.com> 1:1.2.10-14
+* Mon Jun 21 2004 Matthias Clasen <mclasen@redhat.com> 1:1.2.10-14
 - Make it build with gcc 3.4
 
 * Tue Jun 15 2004 Elliot Lee <sopwith@redhat.com>
