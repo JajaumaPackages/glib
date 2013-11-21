@@ -2,7 +2,7 @@ Summary:	A library of handy utility functions
 Name:		glib
 Epoch:		1
 Version:	1.2.10
-Release:	40%{?dist}
+Release:	41%{?dist}
 License:	LGPLv2+
 Group:		System Environment/Libraries
 URL:		http://www.gtk.org/
@@ -21,6 +21,8 @@ Patch5: glib-1.2.10-multilib.patch
 Patch6: glib-1.2.10-unused-dep.patch
 # Avoid having to run autotools at build time
 Patch7: glib-1.2.10-autotools.patch
+# Use format strings properly
+Patch8: glib-1.2.10-format.patch
 
 
 %description
@@ -49,6 +51,7 @@ Requires: pkgconfig
 %patch5 -p1 -b .multilib
 %patch6 -p1 -b .unused-dep
 %patch7 -b .autotools
+%patch8 -b .format
 
 # The original config.{guess,sub} do not work on x86_64, aarch64 etc.
 #
@@ -109,6 +112,9 @@ rm -rf %{buildroot}
 %{_datadir}/aclocal/*
 
 %changelog
+* Thu Nov 21 2013 Paul Howarth <paul@city-fan.org> - 1:1.2.10-41
+- Use format strings properly
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.2.10-40
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
