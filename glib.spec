@@ -2,7 +2,7 @@ Summary:	A library of handy utility functions
 Name:		glib
 Epoch:		1
 Version:	1.2.10
-Release:	43%{?dist}
+Release:	44%{?dist}
 License:	LGPLv2+
 Group:		System Environment/Libraries
 URL:		http://www.gtk.org/
@@ -23,6 +23,8 @@ Patch6: glib-1.2.10-unused-dep.patch
 Patch7: glib-1.2.10-autotools.patch
 # Use format strings properly
 Patch8: glib-1.2.10-format.patch
+# Workaround for different inline semantics between GNU89 and C99
+Patch9: glib-1.2.10-gcc5.patch
 
 
 %description
@@ -52,6 +54,7 @@ Requires: pkgconfig
 %patch6 -p1 -b .unused-dep
 %patch7 -b .autotools
 %patch8 -b .format
+%patch9 -b .gcc5
 
 # The original config.{guess,sub} do not work on x86_64, aarch64 etc.
 #
@@ -97,12 +100,15 @@ rm -rf %{buildroot}
 
 
 %files
-%defattr(-,root,root,-)
-%doc AUTHORS COPYING ChangeLog NEWS README
+%if 0%{?_licensedir:1}
+%license COPYING
+%else
+%doc COPYING
+%endif
+%doc AUTHORS ChangeLog NEWS README
 %{_libdir}/lib*.so.*
 
 %files devel
-%defattr(-,root,root,-)
 %{_bindir}/glib-config
 %{_libdir}/lib*.so
 %{_libdir}/glib/
@@ -112,6 +118,11 @@ rm -rf %{buildroot}
 %{_datadir}/aclocal/*
 
 %changelog
+* Tue Feb 10 2015 Paul Howarth <paul@city-fan.org> - 1:1.2.10-44
+- Work around different inline semantics between GNU89 and C99
+- Drop %%defattr, redundant since rpm 4.4
+- Use %%license where possible
+
 * Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.2.10-43
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
