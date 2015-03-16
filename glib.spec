@@ -2,7 +2,7 @@ Summary:	A library of handy utility functions
 Name:		glib
 Epoch:		1
 Version:	1.2.10
-Release:	44%{?dist}
+Release:	45%{?dist}
 License:	LGPLv2+
 Group:		System Environment/Libraries
 URL:		http://www.gtk.org/
@@ -118,6 +118,10 @@ rm -rf %{buildroot}
 %{_datadir}/aclocal/*
 
 %changelog
+* Mon Mar 16 2015 Than Ngo <than@redhat.com> - 1:1.2.10-45
+- bump the release number of this package so that koji-shadow
+  can rebuild it against new gcc on secondary arch. 
+
 * Tue Feb 10 2015 Paul Howarth <paul@city-fan.org> - 1:1.2.10-44
 - Work around different inline semantics between GNU89 and C99
 - Drop %%defattr, redundant since rpm 4.4
