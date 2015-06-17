@@ -2,7 +2,7 @@ Summary:	A library of handy utility functions
 Name:		glib
 Epoch:		1
 Version:	1.2.10
-Release:	45%{?dist}
+Release:	46%{?dist}
 License:	LGPLv2+
 Group:		System Environment/Libraries
 URL:		http://www.gtk.org/
@@ -118,6 +118,9 @@ rm -rf %{buildroot}
 %{_datadir}/aclocal/*
 
 %changelog
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:1.2.10-46
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Mon Mar 16 2015 Than Ngo <than@redhat.com> - 1:1.2.10-45
 - bump the release number of this package so that koji-shadow
   can rebuild it against new gcc on secondary arch. 
