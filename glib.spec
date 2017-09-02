@@ -2,11 +2,11 @@ Summary:	A library of handy utility functions
 Name:		glib
 Epoch:		1
 Version:	1.2.10
-Release:	50%{?dist}
+Release:	51%{?dist}
 License:	LGPLv2+
 Group:		System Environment/Libraries
 URL:		http://www.gtk.org/
-Source:		ftp://ftp.gimp.org/pub/gtk/v1.2/glib-%{version}.tar.gz
+Source:		http://download.gimp.org/pub/gtk/v1.2/glib-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(id -nu)
 BuildRequires:	libtool
 
@@ -118,6 +118,9 @@ rm -rf %{buildroot}
 %{_datadir}/aclocal/*
 
 %changelog
+* Sat Sep 02 2017 Jajauma's Packages <jajauma@yandex.ru> - 1:1.2.10-51
+- Fix download link
+
 * Wed Aug 02 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.2.10-50
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
